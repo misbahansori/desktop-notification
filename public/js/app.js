@@ -18605,7 +18605,21 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     Echo.channel("post").listen("PostCreated", function (e) {
-      return console.log(e);
+      if (!("Notification" in window)) {
+        alert("Web Notification is not supported");
+        return;
+      }
+
+      Notification.requestPermission(function (permission) {
+        var notification = new Notification("New post alert!", {
+          body: e.post // content for the alert
+
+        }); // link to page on clicking the notification
+
+        notification.onclick = function () {
+          window.open(window.location.href);
+        };
+      });
     });
   }
 });
@@ -20280,11 +20294,13 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/dist/web/pusher.js");
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__.default({
   broadcaster: 'pusher',
-  key: "123",
+  key: "96867d0a453e7a98fa39f74c7db80f09",
   cluster: "mt1",
   wsHost: window.location.hostname,
   wsPort: 6001,
-  forceTLS: false,
+  wssPort: 6001,
+  forceTLS: true,
+  encrypted: true,
   disableStats: true
 });
 

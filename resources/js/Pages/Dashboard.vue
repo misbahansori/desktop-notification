@@ -22,7 +22,23 @@ export default {
     BreezeAuthenticatedLayout,
   },
   mounted() {
-    Echo.channel("post").listen("PostCreated", (e) => console.log(e));
+    Echo.channel("post").listen("PostCreated", (e) => {
+      if (!("Notification" in window)) {
+        alert("Web Notification is not supported");
+        return;
+      }
+
+      Notification.requestPermission((permission) => {
+        let notification = new Notification("New post alert!", {
+          body: e.post, // content for the alert
+        });
+
+        // link to page on clicking the notification
+        notification.onclick = () => {
+          window.open(window.location.href);
+        };
+      });
+    });
   },
 };
 </script>
